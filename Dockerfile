@@ -2,12 +2,10 @@ FROM centos:7
 MAINTAINER "Mitsuru Nakakawaji" <mitsuru@procube.jp>
 ENV NGINX_VERSION "1.12.1-1"
 RUN yum -y update \
-&& yum -y install unzip wget sudo lsof openssh-clients telnet bind-utils tar tcpdump vim initscripts \
-&& useradd builder \
-&& echo 'builder ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/builder
+    && yum -y install unzip wget sudo lsof openssh-clients telnet bind-utils tar tcpdump vim initscripts
 
 RUN yum -y install gcc openssl-devel zlib-devel pcre-devel lua lua-devel rpmdevtools make deltarpm \
-  perl-devel perl-ExtUtils-Embed GeoIP-devel libxslt-devel gd-devel which
+      perl-devel perl-ExtUtils-Embed GeoIP-devel libxslt-devel gd-devel which
 
 ENV HOME /root
 WORKDIR /root
