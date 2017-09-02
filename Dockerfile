@@ -6,7 +6,7 @@ RUN yum -y update \
         gcc openssl-devel zlib-devel pcre-devel lua lua-devel rpmdevtools make deltarpm \
         perl-devel perl-ExtUtils-Embed GeoIP-devel libxslt-devel gd-devel which
 RUN mkdir -p /tmp/buffer
-COPY core.patch shibboleth.patch nginx.spec.patch /tmp/buffer/
+COPY core.patch shibboleth.patch nginx.spec.patch nginx.conf.patch /tmp/buffer/
 RUN groupadd -g 111 builder
 RUN useradd -g builder -u 111 builder
 ENV HOME /home/builder
@@ -26,4 +26,6 @@ RUN mkdir ${HOME}/srpms \
     && rpm -ivh ${HOME}/srpms/nginx-${NGINX_VERSION}.el7.ngx.src.rpm
 RUN cd rpmbuild/SPECS \
     && patch -p 1 nginx.spec < ../SOURCES/nginx.spec.patch
+RUN cd rpmbuild/SOURCES \
+    && patch < nginx.conf.patch
 CMD ["/usr/bin/rpmbuild","-bb","rpmbuild/SPECS/nginx.spec"]
