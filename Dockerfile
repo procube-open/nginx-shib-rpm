@@ -1,5 +1,10 @@
 FROM centos:7
 MAINTAINER "Mitsuru Nakakawaji" <mitsuru@procube.jp>
+RUN groupadd -g 111 builder
+RUN useradd -g builder -u 111 builder
+ENV HOME /home/builder
+WORKDIR ${HOME}
+RUN mkdir -p ${HOME}/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 ENV NGINX_VERSION "1.12.1-1"
 RUN yum -y update \
     && yum -y install unzip wget sudo lsof openssh-clients telnet bind-utils tar tcpdump vim initscripts \
@@ -7,10 +12,6 @@ RUN yum -y update \
         perl-devel perl-ExtUtils-Embed GeoIP-devel libxslt-devel gd-devel which
 RUN mkdir -p /tmp/buffer
 COPY core.patch shibboleth.patch nginx.spec.patch nginx.conf.patch /tmp/buffer/
-RUN groupadd -g 111 builder
-RUN useradd -g builder -u 111 builder
-ENV HOME /home/builder
-WORKDIR ${HOME}
 USER builder
 RUN mkdir -p ${HOME}/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 RUN echo "%_topdir %(echo ${HOME})/rpmbuild" > ${HOME}/.rpmmacros
