@@ -13,9 +13,8 @@ RUN yum -y update \
 RUN mkdir -p /tmp/buffer
 COPY core.patch shibboleth.patch nginx.spec.patch nginx.conf.patch /tmp/buffer/
 USER builder
-RUN mkdir -p ${HOME}/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 RUN echo "%_topdir %(echo ${HOME})/rpmbuild" > ${HOME}/.rpmmacros
-RUN cp /tmp/buffer/* rpmbuild/SOURCES
+RUN cp /tmp/buffer/* ${HOME}/rpmbuild/SOURCES/
 RUN wget -O rpmbuild/SOURCES/ngx_devel_kit-0.2.19.tar.gz https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz
 RUN wget -O rpmbuild/SOURCES/lua-nginx-module-0.10.9rc5.tar.gz https://github.com/openresty/lua-nginx-module/archive/v0.10.9rc5.tar.gz
 RUN wget -O rpmbuild/SOURCES/nginx-goodies-nginx-sticky-module-ng-08a395c66e42.tar.gz https://bitbucket.org/nginx-goodies/nginx-sticky-module-ng/get/08a395c66e42.tar.gz
