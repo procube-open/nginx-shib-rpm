@@ -4,18 +4,18 @@ services:
   - docker
 install: true
 script:
-  - docker build -t chipin/nginx-shib-rpm .
+  - docker build -t procube-open/nginx-shib-rpm .
   - mkdir -p /tmp/RPMS/x86_64
   - sudo chown 111:111 -R /tmp/RPMS
-  - docker run -it --rm --name nginx-shib-rpm -v /tmp/RPMS:/home/builder/rpmbuild/RPMS chipin/nginx-shib-rpm
+  - docker run -it --rm --name nginx-shib-rpm -v /tmp/RPMS:/home/builder/rpmbuild/RPMS procube-open/nginx-shib-rpm
   - (cd /tmp;tar czf - RPMS) > $TRAVIS_BUILD_DIR/nginx-shib-rpm.tar.gz
 deploy:
   provider: releases
   api_key:
-    secure: Ea0mSlovqEJcCRi+SKL0sTeWsnXCBJbvQY99CLmS4BjC8NedWt9mU79fPWiepqeOIQTWDf3icnsWLbzgfvUC4GKPYEOPD3RJEXqQGmMYmYhOoFjePW/VJHdNjLKajouQbekx4uGhPJC73CxAfWuynFhD3sg+6/NstYbMuLMYcIiO/ssln3CXV3/I2zCYQxMXHZQ6YNE+7HMLnrQ4AGBUesu4FleApxvJILJe6WnYmwmCX/DK1IF2VPlUpg9PKL8PoH8dDgB3LkYowgGW2UCvV3mb9RV8IFmwyWmGJXkI+TfRh+mpMP272HpCelQc6vNF0yiLrlDqWs3m8f8GGGmiK7ih/E5WaaY1zEruj3G8tlQcw+k9nXCZfdj0Uh6mH7CLYKtsso/5zDDZwtvgB4qMcQuZXfaE6hB/d4n0qAdsU83LSfC/zjBQx50mkg92vKOMZA5qjhfjMF50DX5mxkCi6TuHjygnYq+cHLsjPLs2wEwVjHhd58fc/c7frfLKcjbXNZHyYjYLmRTNvA6iXfuED/xx1owrB1OZrCdWvevYNz9wVKV9g6PUt780085ao6JOpoNrIbzOM9ZgmbS9i2cjoKdUv2WDMbK6NDcpYVKkdbgwEGwcWYfnOPApSr0IkihbKRXV5B6ReWYcheXPceiMglZRBugirTwYYIOGB8QNYtc=
+    secure: "lquqsexf8PZhTxb8h9EETvz1Tb5+j0uNq1+jCXmmUFgyCGDEuZpdpGSbYEM9Y4GCwpi+lVYExxRBw+Q3a7AGgZHh6W5ffbMSDFPiHMc0UEPsUDkc5gcj/dbYqIid+TKB+Hdno+J9bGTxka3/23eYjZZoWO5dQT4Gnz7S4R0oXZiM2oELss9e0d7Rus49H4+tcFkpWzWfYEsAnAAh0nmC01b3ygflukaEFilwRlNrltn95b3At1T73X46l5bO2BvGKzm85YJRLtnQNn9ZqECXpKhE0K1I/s6JhGEWKgvXSiSMAGMVzfXVdT6KZ0uCpEFjH9tLL6m1dQ+xeQ0DT8xkveVHdotrwQNhhdxTd29B3yDYVZr6Z/7YINKVljqBRFCyvn6HFJuCXhryWxaGhmtqbJlA7aUG50k3voiuqCC5CmqzzDciBjk9E1cUWWM2tfTum9U10OL2tuYPjuBtR+nhK+7Vo6vz5VHYyYO8B5NAzzSfM4lo458JXNRSpfepXIKhCJ4/nipqH7/gbEMzC6I+4F0j8C8w+tQsL+b5FMlzdZp9lcheF0I6GI7IcOgH5ExgT9gE7wFUe08U8xJEUQYhHEjZpWH01q+iR+G5KAyah2DeotAzCxh0lXQ+TAji5NInpzD3g8o+OZ0bROjGakeRp1ZvK+P06xRvEh/A3xAFvCU="
   file: nginx-shib-rpm.tar.gz
   overwrite: true
   skip_cleanup: true
   on:
-    repo: chip-in/nginx-shib-rpm
+    repo: procube-open/nginx-shib-rpm
     tags: true
