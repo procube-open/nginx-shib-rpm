@@ -1,13 +1,13 @@
 --- org/ngx_http_shibboleth_module.c	2016-12-14 06:44:03.000000000 +0900
-+++ nginx-http-shibboleth-2.0.0/ngx_http_shibboleth_module.c	2016-12-14 10:06:10.000000000 +0900
++++ nginx-http-shibboleth-2.0.1/ngx_http_shibboleth_module.c	2016-12-14 10:06:10.000000000 +0900
 @@ -234,6 +234,7 @@ ngx_http_auth_request_handler(ngx_http_r
      ngx_http_post_subrequest_t    *ps;
      ngx_http_auth_request_ctx_t   *ctx;
      ngx_http_auth_request_conf_t  *arcf;
 +    u_char                        *remote_user;
- 
+
      arcf = ngx_http_get_module_loc_conf(r, ngx_http_shibboleth_module);
- 
+
 @@ -321,6 +322,19 @@ ngx_http_auth_request_handler(ngx_http_r
                                  NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                                  "shib request authorizer copied header: \"%V: %V\"",
