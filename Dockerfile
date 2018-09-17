@@ -27,6 +27,8 @@ RUN wget --no-verbose -O rpmbuild/SOURCES/headers-more-nginx-module-0.33.tar.gz 
 #      if (alcf->upstream.cache != NGX_CONF_UNSET_PTR
 # Last Commits for master branch on Feb 28, 2015
 COPY nginx_ajp_module-master.tar.gz rpmbuild/SOURCES/nginx_ajp_module-master.tar.gz
+# Latest commit 1a92c67  on 19 Jul 2017
+COPY ngx_upstream_jdomain-master.tar.gz  rpmbuild/SOURCES/ngx_upstream_jdomain-master.tar.gz
 RUN mkdir ${HOME}/srpms \
     && cd srpms \
     && wget https://nginx.org/packages/mainline/centos/7/SRPMS/nginx-${NGINX_VERSION}.el7_4.ngx.src.rpm \

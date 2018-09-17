@@ -1,6 +1,10 @@
 --- original/nginx.spec	2018-09-11 06:35:30.000000000 +0900
-+++ shib/nginx.spec	2018-09-11 09:17:13.000000000 +0900
-@@ -4,6 +4,15 @@
++++ shib/nginx.spec	2018-09-17 17:47:53.000000000 +0900
+@@ -1,9 +1,19 @@
+-#
++ngx_upstream_jdomain#
+ %define nginx_home %{_localstatedir}/cache/nginx
+ %define nginx_user nginx
  %define nginx_group nginx
  %define nginx_loggroup adm
  
@@ -8,6 +12,7 @@
 +%define lua_nginx_version 0.10.13
 +%define ngx_devel_kit_version 0.3.0
 +%define nginx_ajp_module_version master
++%define ngx_upstream_jdomain_version master
 +%define nginx_http_shibboleth_version 2.0.1
 +%define headers_more_version 0.33
 +%define sticky_module_version 08a395c66e42
@@ -16,7 +21,7 @@
  # distribution specific definitions
  %define use_systemd (0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7) || (0%{?suse_version} == 1315)
  
-@@ -19,10 +28,14 @@
+@@ -19,10 +29,14 @@
  %if 0%{?rhel} == 7
  BuildRequires: redhat-lsb-core
  %define _group System Environment/Daemons
@@ -33,7 +38,7 @@
  BuildRequires: systemd
  %define os_minor %(lsb_release -rs | cut -d '.' -f 2)
  %if %{os_minor} >= 4
-@@ -55,7 +68,14 @@
+@@ -55,7 +69,15 @@
  %define WITH_CC_OPT $(echo %{optflags} $(pcre-config --cflags)) -fPIC
  %define WITH_LD_OPT -Wl,-z,relro -Wl,-z,now -pie
  
@@ -42,6 +47,7 @@
 +--add-module=%{bdir}/ngx_devel_kit-%{ngx_devel_kit_version} \
 +--add-module=%{bdir}/lua-nginx-module-%{lua_nginx_version} \
 +--add-module=%{bdir}/nginx_ajp_module-%{nginx_ajp_module_version} \
++--add-module=%{bdir}/ngx_upstream_jdomain-%{ngx_upstream_jdomain_version} \
 +--add-module=%{bdir}/nginx-http-shibboleth-%{nginx_http_shibboleth_version} \
 +--add-module=%{bdir}/headers-more-nginx-module-%{headers_more_version} \
 +--add-module=%{bdir}/nginx-goodies-nginx-sticky-module-ng-%{sticky_module_version_internal} \
@@ -49,7 +55,7 @@
  
  Summary: High performance web server
  Name: nginx
-@@ -65,7 +85,7 @@
+@@ -65,7 +87,7 @@
  URL: http://nginx.org/
  Group: %{_group}
  
@@ -58,7 +64,7 @@
  Source1: logrotate
  Source2: nginx.init.in
  Source3: nginx.sysconf
-@@ -78,13 +98,24 @@
+@@ -78,13 +100,25 @@
  Source11: nginx-debug.service
  Source12: COPYRIGHT
  Source13: nginx.check-reload.sh
@@ -68,6 +74,7 @@
 +Source17: headers-more-nginx-module-%{headers_more_version}.tar.gz
 +Source18: nginx-goodies-nginx-sticky-module-ng-%{sticky_module_version}.tar.gz
 +Source19: nginx_ajp_module-%{nginx_ajp_module_version}.tar.gz
++Source20: ngx_upstream_jdomain-%{ngx_upstream_jdomain_version}.tar.gz
 +
 +Patch0: core.patch
 +Patch1: shibboleth.patch
@@ -83,7 +90,7 @@
  Provides: webserver
  
  %description
-@@ -96,14 +127,32 @@
+@@ -96,14 +130,34 @@
  %endif
  
  %prep
@@ -107,6 +114,8 @@
 +%setup -T -D -a 18
 +%{__tar} xzvf %{SOURCE19}
 +%setup -T -D -a 19
++%{__tar} xzvf %{SOURCE20}
++%setup -T -D -a 20
 +%patch0 -p1
 +%patch1 -p0
  
@@ -117,7 +126,7 @@
  ./configure %{BASE_CONFIGURE_ARGS} \
      --with-cc-opt="%{WITH_CC_OPT}" \
      --with-ld-opt="%{WITH_LD_OPT}" \
-@@ -154,6 +203,11 @@
+@@ -154,6 +208,11 @@
  %{__install} -p -D -m 0644 %{bdir}/objs/nginx.8 \
      $RPM_BUILD_ROOT%{_mandir}/man8/nginx.8
  
@@ -129,7 +138,7 @@
  %if %{use_systemd}
  # install systemd-specific files
  %{__mkdir} -p $RPM_BUILD_ROOT%{_unitdir}
-@@ -208,6 +262,8 @@
+@@ -208,6 +267,8 @@
  %config(noreplace) %{_sysconfdir}/nginx/koi-utf
  %config(noreplace) %{_sysconfdir}/nginx/koi-win
  %config(noreplace) %{_sysconfdir}/nginx/win-utf
@@ -138,7 +147,7 @@
  
  %config(noreplace) %{_sysconfdir}/logrotate.d/nginx
  %config(noreplace) %{_sysconfdir}/sysconfig/nginx
-@@ -240,18 +296,16 @@
+@@ -240,18 +301,16 @@
  getent group %{nginx_group} >/dev/null || groupadd -r %{nginx_group}
  getent passwd %{nginx_user} >/dev/null || \
      useradd -r -g %{nginx_group} -s /sbin/nologin \
