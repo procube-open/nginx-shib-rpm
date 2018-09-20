@@ -1,5 +1,5 @@
 --- original/nginx.spec	2018-09-11 06:35:30.000000000 +0900
-+++ shib/nginx.spec	2018-09-17 18:03:21.000000000 +0900
++++ shib/nginx.spec	2018-09-20 19:06:45.000000000 +0900
 @@ -4,6 +4,16 @@
  %define nginx_group nginx
  %define nginx_loggroup adm
@@ -34,7 +34,15 @@
  BuildRequires: systemd
  %define os_minor %(lsb_release -rs | cut -d '.' -f 2)
  %if %{os_minor} >= 4
-@@ -55,7 +69,15 @@
+@@ -48,14 +62,22 @@
+ # end of distribution specific definitions
+ 
+ %define main_version 1.15.3
+-%define main_release 1%{?dist}.ngx
++%define main_release 2%{?dist}.ngx
+ 
+ %define bdir %{_builddir}/%{name}-%{main_version}
+ 
  %define WITH_CC_OPT $(echo %{optflags} $(pcre-config --cflags)) -fPIC
  %define WITH_LD_OPT -Wl,-z,relro -Wl,-z,now -pie
  
