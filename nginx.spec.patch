@@ -1,5 +1,5 @@
 --- original/nginx.spec	2018-09-11 06:35:30.000000000 +0900
-+++ shib/nginx.spec	2018-09-20 19:06:45.000000000 +0900
++++ SOURCE/nginx.spec	2018-09-24 14:05:06.000000000 +0900
 @@ -4,6 +4,16 @@
  %define nginx_group nginx
  %define nginx_loggroup adm
@@ -39,7 +39,7 @@
  
  %define main_version 1.15.3
 -%define main_release 1%{?dist}.ngx
-+%define main_release 2%{?dist}.ngx
++%define main_release 3%{?dist}.ngx
  
  %define bdir %{_builddir}/%{name}-%{main_version}
  
@@ -68,7 +68,7 @@
  Source1: logrotate
  Source2: nginx.init.in
  Source3: nginx.sysconf
-@@ -78,13 +100,25 @@
+@@ -78,13 +100,26 @@
  Source11: nginx-debug.service
  Source12: COPYRIGHT
  Source13: nginx.check-reload.sh
@@ -82,6 +82,7 @@
 +
 +Patch0: core.patch
 +Patch1: shibboleth.patch
++Patch2: sticky.patch
  
  License: 2-clause BSD-like license
  
@@ -94,7 +95,7 @@
  Provides: webserver
  
  %description
-@@ -96,14 +130,34 @@
+@@ -96,14 +131,35 @@
  %endif
  
  %prep
@@ -121,7 +122,8 @@
 +%{__tar} xzvf %{SOURCE20}
 +%setup -T -D -a 20
 +%patch0 -p1
-+%patch1 -p0
++%patch1 -p1
++%patch2 -p1
  
  %build
 +export LUA_LIB=/usr/lib64
@@ -130,7 +132,7 @@
  ./configure %{BASE_CONFIGURE_ARGS} \
      --with-cc-opt="%{WITH_CC_OPT}" \
      --with-ld-opt="%{WITH_LD_OPT}" \
-@@ -154,6 +208,11 @@
+@@ -154,6 +210,11 @@
  %{__install} -p -D -m 0644 %{bdir}/objs/nginx.8 \
      $RPM_BUILD_ROOT%{_mandir}/man8/nginx.8
  
@@ -142,7 +144,7 @@
  %if %{use_systemd}
  # install systemd-specific files
  %{__mkdir} -p $RPM_BUILD_ROOT%{_unitdir}
-@@ -208,6 +267,8 @@
+@@ -208,6 +269,8 @@
  %config(noreplace) %{_sysconfdir}/nginx/koi-utf
  %config(noreplace) %{_sysconfdir}/nginx/koi-win
  %config(noreplace) %{_sysconfdir}/nginx/win-utf
@@ -151,7 +153,7 @@
  
  %config(noreplace) %{_sysconfdir}/logrotate.d/nginx
  %config(noreplace) %{_sysconfdir}/sysconfig/nginx
-@@ -240,18 +301,16 @@
+@@ -240,18 +303,16 @@
  getent group %{nginx_group} >/dev/null || groupadd -r %{nginx_group}
  getent passwd %{nginx_user} >/dev/null || \
      useradd -r -g %{nginx_group} -s /sbin/nologin \

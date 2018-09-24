@@ -10,7 +10,7 @@ RUN yum -y update \
         gcc openssl-devel zlib-devel pcre-devel lua lua-devel rpmdevtools make deltarpm \
         perl-devel perl-ExtUtils-Embed GeoIP-devel libxslt-devel gd-devel which redhat-lsb-core
 RUN mkdir -p /tmp/buffer
-COPY core.patch shibboleth.patch nginx.spec.patch nginx.conf.patch /tmp/buffer/
+COPY core.patch shibboleth.patch sticky.patch nginx.spec.patch nginx.conf.patch /tmp/buffer/
 USER builder
 RUN mkdir -p ${HOME}/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 RUN echo "%_topdir %(echo ${HOME})/rpmbuild" > ${HOME}/.rpmmacros
@@ -31,7 +31,7 @@ COPY nginx_ajp_module-master.tar.gz rpmbuild/SOURCES/nginx_ajp_module-master.tar
 COPY ngx_upstream_jdomain-master.tar.gz  rpmbuild/SOURCES/ngx_upstream_jdomain-master.tar.gz
 RUN mkdir ${HOME}/srpms \
     && cd srpms \
-    && wget https://nginx.org/packages/mainline/centos/7/SRPMS/nginx-${NGINX_VERSION}.el7_4.ngx.src.rpm \
+    && wget --no-verbose https://nginx.org/packages/mainline/centos/7/SRPMS/nginx-${NGINX_VERSION}.el7_4.ngx.src.rpm \
     && rpm -ivh ${HOME}/srpms/nginx-${NGINX_VERSION}.el7_4.ngx.src.rpm
 RUN cd rpmbuild/SPECS \
     && patch -p 1 nginx.spec < ../SOURCES/nginx.spec.patch
